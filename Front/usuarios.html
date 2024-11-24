@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Usuários - Distribuidora de Bebidas</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container py-5">
+        <!-- Cabeçalho -->
+        <div class="text-center mb-5">
+            <h1 class="display-4 text-primary">Gerenciar Usuários</h1>
+            <p class="lead">Gerencie as informações dos usuários da Distribuidora de Bebidas.</p>
+            <button class="btn btn-secondary" onclick="window.location.href='menu.html'">Voltar ao Menu</button>
+        </div>
+
+        <!-- Layout lado a lado -->
+        <div class="row">
+            <!-- Formulário de usuários -->
+            <div class="col-lg-5 mb-4">
+                <div class="card shadow">
+                    <div class="card-header bg-success text-white">
+                        <h3 class="mb-0">Adicionar / Atualizar Usuário</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="usuariosForm">
+                            <div class="form-group">
+                                <label for="nome">Nome</label>
+                                <input type="text" class="form-control" id="nome" placeholder="Digite o nome" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">E-mail</label>
+                                <input type="email" class="form-control" id="email" placeholder="Digite o e-mail" required>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-block">Salvar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabela de usuários -->
+            <div class="col-lg-7">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">Lista de Usuários</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover flex-table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>E-mail</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usuariosBody">
+                                <!-- Registros serão carregados aqui -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const usuarios = [
+            { id: 1, nome: "João Silva", email: "joao@email.com" },
+            { id: 2, nome: "Maria Oliveira", email: "maria@email.com" }
+        ];
+
+        function carregarUsuarios() {
+            const body = document.getElementById('usuariosBody');
+            body.innerHTML = '';
+            usuarios.forEach(usuario => {
+                body.innerHTML += `
+                    <tr>
+                        <td>${usuario.id}</td>
+                        <td>${usuario.nome}</td>
+                        <td>${usuario.email}</td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
+                                <button class="btn btn-warning btn-sm" onclick="editarUsuario(${usuario.id})">Editar</button>
+                                <button class="btn btn-danger btn-sm" onclick="removerUsuario(${usuario.id})">Deletar</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function editarUsuario(id) {
+            const usuario = usuarios.find(u => u.id === id);
+            document.getElementById('nome').value = usuario.nome;
+            document.getElementById('email').value = usuario.email;
+            removerUsuario(id);
+        }
+
+        function removerUsuario(id) {
+            const index = usuarios.findIndex(u => u.id === id);
+            if (index !== -1) usuarios.splice(index, 1);
+            carregarUsuarios();
+        }
+
+        document.getElementById('usuariosForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const id = usuarios.length ? usuarios[usuarios.length - 1].id + 1 : 1;
+            usuarios.push({ id, nome, email });
+            carregarUsuarios();
+            this.reset();
+        });
+
+        carregarUsuarios();
+    </script>
+</body>
+</html>

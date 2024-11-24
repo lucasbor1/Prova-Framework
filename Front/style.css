@@ -1,0 +1,55 @@
+/* Configuração geral */
+body {
+    background: #f7f7f7;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Reduzindo margens laterais */
+.container {
+    max-width: 90%;
+    margin: auto;
+}
+
+/* Cartões */
+.card {
+    border: none;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Tabelas */
+.flex-table {
+    table-layout: auto;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.flex-table th,
+.flex-table td {
+    text-align: center; /* Alinhamento horizontal */
+    vertical-align: middle; /* Centralização vertical */
+    padding: 10px;
+    white-space: nowrap; /* Evita quebra de texto */
+    text-overflow: ellipsis; /* Aplica "..." para texto que excede o espaço */
+    overflow: hidden; /* Evita transbordamento */
+}
+
+.flex-table th {
+    background-color: #343a40;
+    color: #fff;
+    font-weight: bold;
+}
+
+/* Botões de ações */
+.flex-table .d-flex {
+    gap: 10px; /* Espaço entre botões */
+    justify-content: center; /* Centraliza botões dentro da célula */
+}
+
+/* Adiciona scroll horizontal somente quando necessário */
+.card-body {
+    overflow-x: auto;
+}
