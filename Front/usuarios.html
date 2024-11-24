@@ -47,18 +47,16 @@
                         <h3 class="mb-0">Lista de Usuários</h3>
                     </div>
                     <div class="card-body">
-                        <table class="table table-hover flex-table">
+                        <table class="table table-hover">
                             <thead class="thead-dark">
                                 <tr>
                                     <th>ID</th>
-                                    <th>Usuario</th>
-                                    <th>E-mail</th>
+                                    <th>Usuário</th>
+                                    <th>Senha</th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>
-                            <tbody id="usuariosBody">
-                                <!-- Registros serão carregados aqui -->
-                            </tbody>
+                            <tbody id="usuariosBody"></tbody>
                         </table>
                     </div>
                 </div>
@@ -66,56 +64,94 @@
         </div>
     </div>
 
-    <script>
-        const usuarios = [
-            { id: 1, usuario: "João Silva", senha: "joao@senha.com" },
-            { id: 2, usuario: "Maria Oliveira", senha: "maria@senha.com" }
-        ];
+    <script type="module">
+        import { listarTodos, enviar, atualizar, remover } from './api.js';
 
-        function carregarUsuarios() {
-            const body = document.getElementById('usuariosBody');
-            body.innerHTML = '';
-            usuarios.forEach(usuario => {
-                body.innerHTML += `
+        const form = document.getElementById('usuariosForm');
+        const body = document.getElementById('usuariosBody');
+
+        // Carregar usuários
+        async function carregarUsuarios() {
+            try {
+                const usuarios = await listarTodos('usuarios');
+                body.innerHTML = usuarios.map(usuario => `
                     <tr>
                         <td>${usuario.id}</td>
                         <td>${usuario.usuario}</td>
-                        <td>${usuario.senha}</td>
+                        <td>${'*'.repeat(usuario.senha.length)}</td>
                         <td>
-                            <div class="d-flex justify-content-center gap-2">
-                                <button class="btn btn-warning btn-sm" onclick="editarUsuario(${usuario.id})">Editar</button>
-                                <button class="btn btn-danger btn-sm" onclick="removerUsuario(${usuario.id})">Deletar</button>
-                            </div>
+                            <button class="btn btn-warning btn-sm" data-action="editar" data-id="${usuario.id}">Editar</button>
+                            <button class="btn btn-danger btn-sm" data-action="excluir" data-id="${usuario.id}">Deletar</button>
                         </td>
                     </tr>
-                `;
-            });
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar usuários:', error);
+                alert('Erro ao carregar a lista de usuários.');
+            }
         }
 
-        function editarUsuario(id) {
-            const usuario = usuarios.find(u => u.id === id);
-            document.getElementById('usuario').value = usuario.usuario;
-            document.getElementById('senha').value = usuario.senha;
-            removerUsuario(id);
-        }
-
-        function removerUsuario(id) {
-            const index = usuarios.findIndex(u => u.id === id);
-            if (index !== -1) usuarios.splice(index, 1);
-            carregarUsuarios();
-        }
-
-        document.getElementById('usuariosForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const usuario = document.getElementById('usuario').value;
-            const senha = document.getElementById('senha').value;
-            const id = usuarios.length ? usuarios[usuarios.length - 1].id + 1 : 1;
-            usuarios.push({ id, usuario, senha });
-            carregarUsuarios();
-            this.reset();
+        // Manipular cliques na tabela
+        body.addEventListener('click', async (e) => {
+            const id = e.target.getAttribute('data-id');
+            const action = e.target.getAttribute('data-action');
+            if (action === 'editar') editarUsuario(id);
+            if (action === 'excluir') excluirUsuario(id);
         });
 
-        carregarUsuarios();
+        // Editar usuário
+        async function editarUsuario(id) {
+            try {
+                const usuario = await listarTodos(`usuarios/${id}`);
+                form.usuario.value = usuario.usuario;
+                form.senha.value = usuario.senha;
+                form.setAttribute('data-id', id);
+            } catch (error) {
+                console.error('Erro ao buscar usuário:', error);
+                alert('Erro ao buscar informações do usuário.');
+            }
+        }
+
+        // Excluir usuário
+        async function excluirUsuario(id) {
+            if (!confirm('Deseja realmente excluir este usuário?')) return;
+
+            try {
+                await remover('usuarios', id);
+                alert('Usuário excluído com sucesso.');
+                carregarUsuarios();
+            } catch (error) {
+                console.error('Erro ao excluir usuário:', error);
+                alert('Erro ao excluir usuário.');
+            }
+        }
+
+        // Salvar ou atualizar usuário
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const usuario = form.usuario.value;
+            const senha = form.senha.value;
+            const id = form.getAttribute('data-id');
+
+            try {
+                if (id) {
+                    await atualizar('usuarios', id, { usuario, senha });
+                    alert('Usuário atualizado com sucesso.');
+                } else {
+                    await enviar('usuarios', { usuario, senha });
+                    alert('Usuário cadastrado com sucesso.');
+                }
+                form.reset();
+                form.removeAttribute('data-id');
+                carregarUsuarios();
+            } catch (error) {
+                console.error('Erro ao salvar usuário:', error);
+                alert('Erro ao salvar usuário.');
+            }
+        });
+
+        // Carregar lista ao iniciar
+        window.onload = carregarUsuarios;
     </script>
 </body>
 </html>

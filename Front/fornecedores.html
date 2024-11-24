@@ -76,17 +76,17 @@
         </div>
     </div>
 
-    <script>
-        const fornecedores = [
-            { id: 1, nome: "Fornecedor A", contato: "1234-5678", cidade: "São Paulo", cnpj: "12.345.678/0001-90" },
-            { id: 2, nome: "Fornecedor B", contato: "8765-4321", cidade: "Rio de Janeiro", cnpj: "98.765.432/0001-10" }
-        ];
+    <script type="module">
+        import { listarTodos, enviar, atualizar, remover } from './api.js';
 
-        function carregarFornecedores() {
-            const body = document.getElementById('fornecedoresBody');
-            body.innerHTML = '';
-            fornecedores.forEach(fornecedor => {
-                body.innerHTML += `
+        const form = document.getElementById('fornecedoresForm');
+        const body = document.getElementById('fornecedoresBody');
+
+        // Carregar fornecedores
+        async function carregarFornecedores() {
+            try {
+                const fornecedores = await listarTodos('fornecedores');
+                body.innerHTML = fornecedores.map(fornecedor => `
                     <tr>
                         <td>${fornecedor.id}</td>
                         <td>${fornecedor.nome}</td>
@@ -94,44 +94,82 @@
                         <td>${fornecedor.cidade}</td>
                         <td>${fornecedor.cnpj}</td>
                         <td>
-                            <div class="d-flex justify-content-center gap-2">
-                                <button class="btn btn-warning btn-sm" onclick="editarFornecedor(${fornecedor.id})">Editar</button>
-                                <button class="btn btn-danger btn-sm" onclick="removerFornecedor(${fornecedor.id})">Deletar</button>
-                            </div>
+                            <button class="btn btn-warning btn-sm" data-action="editar" data-id="${fornecedor.id}">Editar</button>
+                            <button class="btn btn-danger btn-sm" data-action="excluir" data-id="${fornecedor.id}">Deletar</button>
                         </td>
                     </tr>
-                `;
-            });
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar fornecedores:', error);
+                alert('Erro ao carregar a lista de fornecedores.');
+            }
         }
 
-        function editarFornecedor(id) {
-            const fornecedor = fornecedores.find(f => f.id === id);
-            document.getElementById('nome').value = fornecedor.nome;
-            document.getElementById('contato').value = fornecedor.contato;
-            document.getElementById('cidade').value = fornecedor.cidade;
-            document.getElementById('cnpj').value = fornecedor.cnpj;
-            removerFornecedor(id);
-        }
-
-        function removerFornecedor(id) {
-            const index = fornecedores.findIndex(f => f.id === id);
-            if (index !== -1) fornecedores.splice(index, 1);
-            carregarFornecedores();
-        }
-
-        document.getElementById('fornecedoresForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const nome = document.getElementById('nome').value;
-            const contato = document.getElementById('contato').value;
-            const cidade = document.getElementById('cidade').value;
-            const cnpj = document.getElementById('cnpj').value;
-            const id = fornecedores.length ? fornecedores[fornecedores.length - 1].id + 1 : 1;
-            fornecedores.push({ id, nome, contato, cidade, cnpj });
-            carregarFornecedores();
-            this.reset();
+        // Manipular cliques na tabela
+        body.addEventListener('click', async (e) => {
+            const id = e.target.getAttribute('data-id');
+            const action = e.target.getAttribute('data-action');
+            if (action === 'editar') editarFornecedor(id);
+            if (action === 'excluir') excluirFornecedor(id);
         });
 
-        carregarFornecedores();
+        // Editar fornecedor
+        async function editarFornecedor(id) {
+            try {
+                const fornecedor = await listarTodos(`fornecedores/${id}`);
+                form.nome.value = fornecedor.nome;
+                form.contato.value = fornecedor.contato;
+                form.cidade.value = fornecedor.cidade;
+                form.cnpj.value = fornecedor.cnpj;
+                form.setAttribute('data-id', id);
+            } catch (error) {
+                console.error('Erro ao buscar fornecedor:', error);
+                alert('Erro ao buscar informações do fornecedor.');
+            }
+        }
+
+        // Excluir fornecedor
+        async function excluirFornecedor(id) {
+            if (!confirm('Deseja realmente excluir este fornecedor?')) return;
+
+            try {
+                await remover('fornecedores', id);
+                alert('Fornecedor excluído com sucesso.');
+                carregarFornecedores();
+            } catch (error) {
+                console.error('Erro ao excluir fornecedor:', error);
+                alert('Erro ao excluir fornecedor.');
+            }
+        }
+
+        // Salvar ou atualizar fornecedor
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nome = form.nome.value;
+            const contato = form.contato.value;
+            const cidade = form.cidade.value;
+            const cnpj = form.cnpj.value;
+            const id = form.getAttribute('data-id');
+
+            try {
+                if (id) {
+                    await atualizar('fornecedores', id, { nome, contato, cidade, cnpj });
+                    alert('Fornecedor atualizado com sucesso.');
+                } else {
+                    await enviar('fornecedores', { nome, contato, cidade, cnpj });
+                    alert('Fornecedor cadastrado com sucesso.');
+                }
+                form.reset();
+                form.removeAttribute('data-id');
+                carregarFornecedores();
+            } catch (error) {
+                console.error('Erro ao salvar fornecedor:', error);
+                alert('Erro ao salvar fornecedor.');
+            }
+        });
+
+        // Carregar lista ao iniciar
+        window.onload = carregarFornecedores;
     </script>
 </body>
 </html>

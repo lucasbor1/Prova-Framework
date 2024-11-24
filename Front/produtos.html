@@ -36,7 +36,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="quantidade">Quantidade</label>
-                                <input type="number" class="form-control" id="quantidade" placeholder="Quantidade de compra" required>
+                                <input type="number" class="form-control" id="quantidade" placeholder="Digite a quantidade" required>
                             </div>
                             <div class="form-group">
                                 <label for="categoria">Categoria</label>
@@ -76,17 +76,17 @@
         </div>
     </div>
 
-    <script>
-        const produtos = [
-            { id: 1, nome: "Cerveja", preco: 5.5, quantidade: 20, categoria: "Bebida Alcoólica" },
-            { id: 2, nome: "Refrigerante", preco: 3.0, quantidade: 50, categoria: "Bebida Não Alcoólica" }
-        ];
+    <script type="module">
+        import { listarTodos, enviar, atualizar, remover } from './api.js';
 
-        function carregarProdutos() {
-            const body = document.getElementById('produtosBody');
-            body.innerHTML = '';
-            produtos.forEach(produto => {
-                body.innerHTML += `
+        const form = document.getElementById('produtosForm');
+        const body = document.getElementById('produtosBody');
+
+        // Função para carregar produtos
+        async function carregarProdutos() {
+            try {
+                const produtos = await listarTodos('produtos');
+                body.innerHTML = produtos.map(produto => `
                     <tr>
                         <td>${produto.id}</td>
                         <td>${produto.nome}</td>
@@ -94,44 +94,82 @@
                         <td>${produto.quantidade}</td>
                         <td>${produto.categoria}</td>
                         <td>
-                            <div class="d-flex justify-content-center gap-2">
-                                <button class="btn btn-warning btn-sm" onclick="editarProduto(${produto.id})">Editar</button>
-                                <button class="btn btn-danger btn-sm" onclick="removerProduto(${produto.id})">Deletar</button>
-                            </div>
+                            <button class="btn btn-warning btn-sm" data-action="editar" data-id="${produto.id}">Editar</button>
+                            <button class="btn btn-danger btn-sm" data-action="excluir" data-id="${produto.id}">Deletar</button>
                         </td>
                     </tr>
-                `;
-            });
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar produtos:', error);
+                alert('Erro ao carregar a lista de produtos.');
+            }
         }
 
-        function editarProduto(id) {
-            const produto = produtos.find(p => p.id === id);
-            document.getElementById('nome').value = produto.nome;
-            document.getElementById('preco').value = produto.preco;
-            document.getElementById('quantidade').value = produto.quantidade;
-            document.getElementById('categoria').value = produto.categoria;
-            removerProduto(id);
-        }
-
-        function removerProduto(id) {
-            const index = produtos.findIndex(p => p.id === id);
-            if (index !== -1) produtos.splice(index, 1);
-            carregarProdutos();
-        }
-
-        document.getElementById('produtosForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const nome = document.getElementById('nome').value;
-            const preco = parseFloat(document.getElementById('preco').value);
-            const quantidade = parseInt(document.getElementById('quantidade').value);
-            const categoria = document.getElementById('categoria').value;
-            const id = produtos.length ? produtos[produtos.length - 1].id + 1 : 1;
-            produtos.push({ id, nome, preco, quantidade, categoria });
-            carregarProdutos();
-            this.reset();
+        // Manipular cliques na tabela
+        body.addEventListener('click', async (e) => {
+            const id = e.target.getAttribute('data-id');
+            const action = e.target.getAttribute('data-action');
+            if (action === 'editar') editarProduto(id);
+            if (action === 'excluir') excluirProduto(id);
         });
 
-        carregarProdutos();
+        // Editar produto
+        async function editarProduto(id) {
+            try {
+                const produto = await listarTodos(`produtos/${id}`);
+                form.nome.value = produto.nome;
+                form.preco.value = produto.preco;
+                form.quantidade.value = produto.quantidade;
+                form.categoria.value = produto.categoria;
+                form.setAttribute('data-id', id);
+            } catch (error) {
+                console.error('Erro ao buscar produto:', error);
+                alert('Erro ao buscar informações do produto.');
+            }
+        }
+
+        // Excluir produto
+        async function excluirProduto(id) {
+            if (!confirm('Deseja realmente excluir este produto?')) return;
+
+            try {
+                await remover('produtos', id);
+                alert('Produto excluído com sucesso.');
+                carregarProdutos();
+            } catch (error) {
+                console.error('Erro ao excluir produto:', error);
+                alert('Erro ao excluir produto.');
+            }
+        }
+
+        // Salvar ou atualizar produto
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nome = form.nome.value;
+            const preco = parseFloat(form.preco.value);
+            const quantidade = parseInt(form.quantidade.value);
+            const categoria = form.categoria.value;
+            const id = form.getAttribute('data-id');
+
+            try {
+                if (id) {
+                    await atualizar('produtos', id, { nome, preco, quantidade, categoria });
+                    alert('Produto atualizado com sucesso.');
+                } else {
+                    await enviar('produtos', { nome, preco, quantidade, categoria });
+                    alert('Produto cadastrado com sucesso.');
+                }
+                form.reset();
+                form.removeAttribute('data-id');
+                carregarProdutos();
+            } catch (error) {
+                console.error('Erro ao salvar produto:', error);
+                alert('Erro ao salvar produto.');
+            }
+        });
+
+        // Carregar lista ao iniciar
+        window.onload = carregarProdutos;
     </script>
 </body>
 </html>
