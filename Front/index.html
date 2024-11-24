@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Distribuidora de Bebidas</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
     <div class="container d-flex justify-content-center align-items-center vh-100">
@@ -13,7 +13,7 @@
             <h2 class="text-center mb-4">Login</h2>
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="usuario">E-mail</label>
+                    <label for="usuario">Usuario</label>
                     <input type="text" class="form-control" id="usuario" placeholder="Digite seu usuário" required>
                 </div>
                 <div class="form-group">
@@ -22,24 +22,34 @@
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Entrar</button>
             </form>
+            <div id="loginError" class="text-danger text-center mt-3" style="display: none;">
+                Credenciais inválidas. Tente novamente.
+            </div>
         </div>
     </div>
 
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const usuario = document.getElementById('usuario').value;
-            const password = document.getElementById('password').value;
+    <script type="module">
+        import { enviar } from './api.js'; 
 
-            if (usuario === 'admin' && password === '1234') {
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const usuario = document.getElementById('usuario').value;
+            const password = document.getElementById('password').value;            
+
+            try {       
+
+                const data = await enviar('usuarios/login', { usuario: usuario, senha: password });                
                 window.location.href = 'menu.html';
-            } else {
-                alert('Credenciais inválidas. Tente novamente.');
+            } catch (error) {
+                if (error.message.includes('401')) {
+                    loginError.style.display = 'block';
+                } else {
+                    console.error('Erro:', error);
+                    alert('Ocorreu um erro ao tentar fazer login. Tente novamente mais tarde.');
+                }
             }
         });
     </script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

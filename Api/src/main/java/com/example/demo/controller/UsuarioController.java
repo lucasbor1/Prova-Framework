@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins="http://127.0.0.1:5500")
 @RequestMapping("/usuarios") 
 public class UsuarioController {
 
@@ -37,7 +38,7 @@ public class UsuarioController {
     }
     
     @PostMapping
-    public ResponseEntity<Response<Usuario>> criar(@Valid @RequestBody Usuario usuario, BindingResult result) {
+    public ResponseEntity<Response<Usuario>> inserir(@Valid @RequestBody Usuario usuario, BindingResult result) {
         Response<Usuario> response = new Response<>();
 
         if (result.hasErrors()) {
@@ -63,8 +64,8 @@ public class UsuarioController {
 
         if (usuarioExistente.isPresent()) {
             Usuario usuario = usuarioExistente.get();
-            usuario.setNome(novoUsuario.getNome());
-            usuario.setEmail(novoUsuario.getEmail());
+            usuario.setUsuario(novoUsuario.getUsuario());
+            usuario.setSenha(novoUsuario.getSenha());
             usuarioRepository.save(usuario);
             response.setData(usuario);
             return ResponseEntity.ok(response);
@@ -84,4 +85,20 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<Response<Usuario>> autenticar(@RequestBody Usuario usuario) {
+        Response<Usuario> response = new Response<>();
+
+        Optional<Usuario> usuarioAutenticado = usuarioRepository.findByUsuarioAndSenha(usuario.getUsuario(), usuario.getSenha());
+
+        if (usuarioAutenticado.isPresent()) {
+            response.setData(usuarioAutenticado.get());
+            return ResponseEntity.ok(response);
+        } else {
+            response.getErrors().add("Usuário ou senha inválidos.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+    }
+
 }

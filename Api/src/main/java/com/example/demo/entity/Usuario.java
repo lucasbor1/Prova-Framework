@@ -14,12 +14,13 @@ public class Usuario {
 
     @Column(nullable = false, length = 50) 
     @NotEmpty(message = "O nome deve ser informado.")
-    @Length(min = 3, max = 50, message = "O nome deve ter entre 3 e 50 caracteres.")
-    private String nome;
+    @Length(min = 3, max = 50, message = "O usuario deve ter entre 3 e 50 caracteres.")
+    private String usuario;
 
     @Column(nullable = false, length = 50) 
-    @NotEmpty(message = "O email deve ser informado.")
-    private String email;
+    @NotEmpty(message = "A senha deve ser informado.")
+    @Length(min = 3, max = 50, message = "A senha deve ter entre 3 e 50 caracteres.")
+    private String senha;
 
     // Getters e Setters
     public long getId() {
@@ -30,19 +31,19 @@ public class Usuario {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getUsuario() {
+        return usuario;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
-    public String getEmail() {
-        return email;
+    public String getSenha() {
+        return senha;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 }
