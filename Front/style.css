@@ -1,4 +1,3 @@
-/* Configuração geral */
 body {
     background: #000;
     font-family: 'Arial', sans-serif;
@@ -7,7 +6,6 @@ body {
     padding: 0;
 }
 
-/* Logo */
 .logo img {
     height: 100px;
 }
@@ -37,28 +35,27 @@ body {
 
 .card-body {
     background-color: #222;
-    padding: 0; /* Remove o espaçamento interno */
-    overflow-x: auto; /* Adiciona barra de rolagem horizontal se necessário */
+    padding: 0; 
+    overflow-x: auto;
 }
 
 /* Tabelas */
 .table-dark {
     background-color: #333;
   
-    table-layout: auto; /* Permite que as colunas se ajustem ao conteúdo */
+    table-layout: auto; 
 }
 
 .table-dark th, .table-dark td {
     color: #fff;
-    white-space: nowrap; /* Evita quebras de texto */
-    overflow: hidden; /* Esconde excesso de texto */
-    text-overflow: ellipsis; /* Adiciona "..." para texto longo */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
 }
 
-/* Remove margens laterais do container */
 .container {
     padding-left: 0;
     padding-right: 0;
-    max-width: 80%; /* Garante que o container ocupe toda a largura */
+    max-width: 80%; 
 }
 
