@@ -1,0 +1,3 @@
+2024-11-25 21:32:00.634096-03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CNPJ CHARACTER VARYING(18)": "'12.345.678/0001-901' (19)"; SQL statement:
+update fornecedores set cidade=?,cnpj=?,contato=?,nome=? where id=? [22001-232]

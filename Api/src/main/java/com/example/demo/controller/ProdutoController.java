@@ -67,6 +67,7 @@ public class ProdutoController {
             produto.setNome(novoProduto.getNome());
             produto.setPreco(novoProduto.getPreco());
             produto.setQuantidade(novoProduto.getQuantidade());
+			produto.setCategoria(novoProduto.getCategoria());
             produtoRepository.save(produto);
             response.setData(produto);
             return ResponseEntity.ok(response);

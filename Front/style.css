@@ -1,9 +1,13 @@
 /* Configuração geral */
 body {
-    background: #f7f7f7;
+    background: #000;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+}
+.logo img {
+    height: 150px;
+    justify-content: center;  
 }
 
 /* Reduzindo margens laterais */
@@ -16,8 +20,12 @@ body {
 .card {
     border: none;
     border-radius: 10px;
-    background-color: #ffffff;
+    background-color: grey;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
 }
 
 /* Tabelas */
