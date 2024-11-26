@@ -8,22 +8,22 @@
     <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
-    <div class="logo">
-        <img src="/Front/image/Distribuidora_Logo.png" alt="Logotipo">
-    </div>
-    <div class="container d-flex justify-content-center align-items-center vh-100">
-        <div class="card p-4 shadow" style="width: 350px;">
-            <h2 class="text-center mb-4">Login</h2>
+    <div class="container d-flex flex-column justify-content-center align-items-center vh-100">
+        <div class="logo mb-4">
+            <img src="/Front/image/Distribuidora_Logo.png" alt="Logotipo">
+        </div>
+        <div class="card p-4 shadow-lg" style="width: 100%; max-width: 400px;">
+            <h2 class="text-center mb-4 text-light">Bem-vindo</h2>
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="usuario">Usuario</label>
+                    <label for="usuario" class="text-light font-weight-bold">Usuário</label>
                     <input type="text" class="form-control" id="usuario" placeholder="Digite seu usuário" required>
                 </div>
                 <div class="form-group">
-                    <label for="password">Senha</label>
+                    <label for="password" class="text-light font-weight-bold">Senha</label>
                     <input type="password" class="form-control" id="password" placeholder="Digite sua senha" required>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+                <button type="submit" class="btn btn-primary btn-block font-weight-bold">Entrar</button>
             </form>
             <div id="loginError" class="text-danger text-center mt-3" style="display: none;">
                 Credenciais inválidas. Tente novamente.
@@ -41,7 +41,6 @@
             const password = document.getElementById('password').value;            
 
             try {       
-
                 const data = await enviar('usuarios/login', { usuario: usuario, senha: password });                
                 window.location.href = 'menu.html';
             } catch (error) {

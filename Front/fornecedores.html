@@ -1,95 +1,134 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gerenciar Fornecedores - Distribuidora de Bebidas</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="logo">
-        <img src="/Front/image/Distribuidora_Logo.png" alt="Logotipo">
-    </div>
-    <div class="container py-5">
-        <!-- Cabeçalho -->
-        <div class="text-center mb-5">
-            <h1 class="display-4 text-primary">Gerenciar Fornecedores</h1>
-            <p class="lead">Gerencie as informações dos fornecedores da Distribuidora de Bebidas.</p>
-            <button class="btn btn-secondary" onclick="window.location.href='menu.html'">Voltar ao Menu</button>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container py-5">      
+      <div class="text-center mb-5">
+        <div class="logo mb-3">
+          <img src="/Front/image/Distribuidora_Logo.png" alt="Logotipo" />
+        </div>
+        <h1 class="text-light">Gerenciar Fornecedores</h1>
+        <button
+          class="btn btn-secondary"
+          onclick="window.location.href='menu.html'"
+        >
+          Voltar ao Menu
+        </button>
+      </div>
+
+      <div class="row">        
+        <div class="col-lg-5 mb-4">
+          <div class="card shadow">
+            <div class="card-header bg-success text-white">
+              <h3 class="mb-0">Adicionar / Atualizar Fornecedor</h3>
+            </div>
+            <div class="card-body bg-dark text-light">
+              <form id="fornecedoresForm">
+                <div class="form-group">
+                  <label for="nome" class="text-light">Nome</label>
+                  <input
+                    type="text"
+                    class="form-control bg-secondary text-light border-0"
+                    id="nome"
+                    placeholder="Digite o nome do fornecedor"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="contato" class="text-light">Contato</label>
+                  <input
+                    type="text"
+                    class="form-control bg-secondary text-light border-0"
+                    id="contato"
+                    placeholder="Digite o contato (telefone ou e-mail)"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="cidade" class="text-light">Cidade</label>
+                  <input
+                    type="text"
+                    class="form-control bg-secondary text-light border-0"
+                    id="cidade"
+                    placeholder="Digite a cidade"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="cnpj" class="text-light">CNPJ</label>
+                  <input
+                    type="text"
+                    class="form-control bg-secondary text-light border-0"
+                    id="cnpj"
+                    placeholder="Digite o CNPJ"
+                    required
+                  />
+                </div>
+                <button type="submit" class="btn btn-success btn-block">
+                  Salvar
+                </button>
+                <div
+                  id="formError"
+                  class="text-danger mt-3"
+                  style="display: none"
+                ></div>
+              </form>
+            </div>
+          </div>
         </div>
 
-        <!-- Layout lado a lado -->
-        <div class="row">
-            <!-- Formulário de fornecedores -->
-            <div class="col-lg-5 mb-4">
-                <div class="card shadow">
-                    <div class="card-header bg-success text-white">
-                        <h3 class="mb-0">Adicionar / Atualizar Fornecedor</h3>
-                    </div>
-                    <div class="card-body">
-                        <form id="fornecedoresForm">
-                            <div class="form-group">
-                                <label for="nome">Nome</label>
-                                <input type="text" class="form-control" id="nome" placeholder="Digite o nome do fornecedor" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="contato">Contato</label>
-                                <input type="text" class="form-control" id="contato" placeholder="Digite o contato (telefone ou e-mail)" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="cidade">Cidade</label>
-                                <input type="text" class="form-control" id="cidade" placeholder="Digite a cidade" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="cnpj">CNPJ</label>
-                                <input type="text" class="form-control" id="cnpj" placeholder="Digite o CNPJ" required>
-                            </div>
-                            <button type="submit" class="btn btn-success btn-block">Salvar</button>
-                        </form>
-                    </div>
-                </div>
+        <div class="col-lg-7">
+          <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+              <h3 class="mb-0">Lista de Fornecedores</h3>
             </div>
-
-            <!-- Tabela de fornecedores -->
-            <div class="col-lg-7">
-                <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
-                        <h3 class="mb-0">Lista de Fornecedores</h3>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-hover flex-table">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Nome</th>
-                                    <th>Contato</th>
-                                    <th>Cidade</th>
-                                    <th>CNPJ</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="fornecedoresBody">
-                                <!-- Registros serão carregados aqui -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            <div class="card-body bg-dark text-light">
+              <table class="table table-hover table-dark">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Contato</th>
+                    <th>Cidade</th>
+                    <th>CNPJ</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="fornecedoresBody"></tbody>
+              </table>
             </div>
+          </div>
         </div>
+      </div>
     </div>
 
     <script type="module">
-        import { listarTodos, enviar, atualizar, remover } from './api.js';
+      import {
+        listarTodos,
+        enviar,
+        atualizar,
+        remover,
+        buscarPorId,
+      } from "./api.js";
 
-        const form = document.getElementById('fornecedoresForm');
-        const body = document.getElementById('fornecedoresBody');
+      const form = document.getElementById("fornecedoresForm");
+      const body = document.getElementById("fornecedoresBody");
 
-        // Carregar fornecedores
-        async function carregarFornecedores() {
-            try {
-                const fornecedores = await listarTodos('fornecedores');
-                body.innerHTML = fornecedores.map(fornecedor => `
+      async function carregarFornecedores() {
+        try {
+          const fornecedores = await listarTodos("fornecedores");
+          body.innerHTML = fornecedores
+            .map(
+              (fornecedor) => `
                     <tr>
                         <td>${fornecedor.id}</td>
                         <td>${fornecedor.nome}</td>
@@ -101,78 +140,86 @@
                             <button class="btn btn-danger btn-sm" data-action="excluir" data-id="${fornecedor.id}">Deletar</button>
                         </td>
                     </tr>
-                `).join('');
-            } catch (error) {
-                console.error('Erro ao carregar fornecedores:', error);
-                alert('Erro ao carregar a lista de fornecedores.');
-            }
+                `
+            )
+            .join("");
+        } catch (error) {
+          console.error("Erro ao carregar fornecedores:", error);
+          alert("Erro ao carregar a lista de fornecedores.");
         }
+      }
 
-        // Manipular cliques na tabela
-        body.addEventListener('click', async (e) => {
-            const id = e.target.getAttribute('data-id');
-            const action = e.target.getAttribute('data-action');
-            if (action === 'editar') editarFornecedor(id);
-            if (action === 'excluir') excluirFornecedor(id);
-        });
-
-        // Editar fornecedor
-        async function editarFornecedor(id) {
-            try {
-                const fornecedor = await listarTodos(`fornecedores/${id}`);
-                form.nome.value = fornecedor.nome;
-                form.contato.value = fornecedor.contato;
-                form.cidade.value = fornecedor.cidade;
-                form.cnpj.value = fornecedor.cnpj;
-                form.setAttribute('data-id', id);
-            } catch (error) {
-                console.error('Erro ao buscar fornecedor:', error);
-                alert('Erro ao buscar informações do fornecedor.');
-            }
+      body.addEventListener("click", async (e) => {
+        const id = e.target.getAttribute("data-id");
+        const action = e.target.getAttribute("data-action");
+        if (action === "editar") editarFornecedor(id);
+        if (action === "excluir") excluirFornecedor(id);
+      });
+      
+      async function editarFornecedor(id) {
+        try {
+          const fornecedor = await buscarPorId("fornecedores", id); 
+          form.nome.value = fornecedor.nome;
+          form.contato.value = fornecedor.contato;
+          form.cidade.value = fornecedor.cidade;
+          form.cnpj.value = fornecedor.cnpj;
+          form.setAttribute("data-id", id);
+        } catch (error) {
+          console.error("Erro ao buscar fornecedor:", error.message);
+          alert("Erro ao buscar informações do fornecedor.");
         }
+      }
 
-        // Excluir fornecedor
-        async function excluirFornecedor(id) {
-            if (!confirm('Deseja realmente excluir este fornecedor?')) return;
+      async function excluirFornecedor(id) {
+        if (!confirm("Deseja realmente excluir este fornecedor?")) return;
 
-            try {
-                await remover('fornecedores', id);
-                alert('Fornecedor excluído com sucesso.');
-                carregarFornecedores();
-            } catch (error) {
-                console.error('Erro ao excluir fornecedor:', error);
-                alert('Erro ao excluir fornecedor.');
-            }
+        try {
+          await remover("fornecedores", id);
+          alert("Fornecedor excluído com sucesso.");
+          carregarFornecedores();
+        } catch (error) {
+          console.error("Erro ao excluir fornecedor:", error.message);
+          alert("Erro ao excluir fornecedor.");
         }
+      }
 
-        // Salvar ou atualizar fornecedor
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const nome = form.nome.value;
-            const contato = form.contato.value;
-            const cidade = form.cidade.value;
-            const cnpj = form.cnpj.value;
-            const id = form.getAttribute('data-id');
+      // Salvar ou atualizar fornecedor
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const nome = form.nome.value;
+        const contato = form.contato.value;
+        const cidade = form.cidade.value;
+        const cnpj = form.cnpj.value;
+        const id = form.getAttribute("data-id");
 
-            try {
-                if (id) {
-                    await atualizar('fornecedores', id, { nome, contato, cidade, cnpj });
-                    alert('Fornecedor atualizado com sucesso.');
-                } else {
-                    await enviar('fornecedores', { nome, contato, cidade, cnpj });
-                    alert('Fornecedor cadastrado com sucesso.');
-                }
-                form.reset();
-                form.removeAttribute('data-id');
-                carregarFornecedores();
-            } catch (error) {
-                console.error('Erro ao salvar fornecedor:', error);
-                alert('Erro ao salvar fornecedor.');
-            }
-        });
+        const formError = document.getElementById("formError");
+        formError.style.display = "none";
+        formError.innerHTML = "";
 
-        // Carregar lista ao iniciar
-        window.onload = carregarFornecedores;
+        try {
+          if (id) {
+            await atualizar("fornecedores", id, {
+              nome,
+              contato,
+              cidade,
+              cnpj,
+            });
+            alert("Fornecedor atualizado com sucesso.");
+          } else {
+            await enviar("fornecedores", { nome, contato, cidade, cnpj });
+            alert("Fornecedor cadastrado com sucesso.");
+          }
+          form.reset();
+          form.removeAttribute("data-id");
+          carregarFornecedores();
+        } catch (error) {
+          console.error("Erro ao salvar fornecedor:", error.message);
+          formError.innerHTML = error.message;
+          formError.style.display = "block";
+        }
+      });
+
+      window.onload = carregarFornecedores;
     </script>
-</body>
+  </body>
 </html>

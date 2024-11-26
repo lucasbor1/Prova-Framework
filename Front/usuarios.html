@@ -1,160 +1,197 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gerenciar Usuários - Distribuidora de Bebidas</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="logo">
-        <img src="/Front/image/Distribuidora_Logo.png" alt="Logotipo">
-    </div>
-    <div class="container py-5">
-        <!-- Cabeçalho -->
-        <div class="text-center mb-5">
-            <h1 class="display-4 text-primary">Gerenciar Usuários</h1>
-            <p class="lead">Gerencie as informações dos usuários da Distribuidora de Bebidas.</p>
-            <button class="btn btn-secondary" onclick="window.location.href='menu.html'">Voltar ao Menu</button>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container py-5">      
+      <div class="text-center mb-5">
+        <div class="logo mb-3">
+          <img src="/Front/image/Distribuidora_Logo.png" alt="Logotipo" />
+        </div>
+        <h1 class="text-light">Gerenciar Usuários</h1>
+        <button
+          class="btn btn-secondary"
+          onclick="window.location.href='menu.html'"
+        >
+          Voltar ao Menu
+        </button>
+      </div>
+      
+      <div class="row">
+        <!-- Formulário de usuários -->
+        <div class="col-lg-5 mb-4">
+          <div class="card shadow">
+            <div class="card-header bg-success text-white">
+              <h3 class="mb-0">Adicionar / Atualizar Usuário</h3>
+            </div>
+            <div class="card-body bg-dark text-light">
+              <form id="usuariosForm">
+                <div class="form-group">
+                  <label for="usuario" class="text-light">Usuário</label>
+                  <input
+                    type="text"
+                    class="form-control bg-secondary text-light border-0"
+                    id="usuario"
+                    placeholder="Digite o usuário"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="senha" class="text-light">Senha</label>
+                  <input
+                    type="password"
+                    class="form-control bg-secondary text-light border-0"
+                    id="senha"
+                    placeholder="Digite a senha"
+                    required
+                  />
+                </div>
+                <button type="submit" class="btn btn-success btn-block">
+                  Salvar
+                </button>
+                <div
+                  id="formError"
+                  class="text-danger mt-3"
+                  style="display: none"
+                ></div>
+              </form>
+            </div>
+          </div>
         </div>
 
-        <!-- Layout lado a lado -->
-        <div class="row">
-            <!-- Formulário de usuários -->
-            <div class="col-lg-5 mb-4">
-                <div class="card shadow">
-                    <div class="card-header bg-success text-white">
-                        <h3 class="mb-0">Adicionar / Atualizar Usuário</h3>
-                    </div>
-                    <div class="card-body">
-                        <form id="usuariosForm">
-                            <div class="form-group">
-                                <label for="usuario">Usuário</label>
-                                <input type="text" class="form-control" id="usuario" placeholder="Digite o usuário" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="senha">Senha</label>
-                                <input type="password" class="form-control" id="senha" placeholder="Digite a senha" required>
-                            </div>
-                            <button type="submit" class="btn btn-success btn-block">Salvar</button>
-                        </form>
-                    </div>
-                </div>
+        <!-- Tabela de usuários -->
+        <div class="col-lg-7">
+          <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+              <h3 class="mb-0">Lista de Usuários</h3>
             </div>
-
-            <!-- Tabela de usuários -->
-            <div class="col-lg-7">
-                <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
-                        <h3 class="mb-0">Lista de Usuários</h3>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-hover">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Usuário</th>
-                                    <th>Senha</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="usuariosBody"></tbody>
-                        </table>
-                    </div>
-                </div>
+            <div class="card-body bg-dark text-light">
+              <table class="table table-hover table-dark">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Usuário</th>
+                    <th>Senha</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="usuariosBody"></tbody>
+              </table>
             </div>
+          </div>
         </div>
+      </div>
     </div>
 
     <script type="module">
-        import { listarTodos, enviar, atualizar, remover } from './api.js';
+      import {
+        listarTodos,
+        enviar,
+        atualizar,
+        remover,
+        buscarPorId,
+      } from "./api.js";
 
-        const form = document.getElementById('usuariosForm');
-        const body = document.getElementById('usuariosBody');
+      const form = document.getElementById("usuariosForm");
+      const body = document.getElementById("usuariosBody");
 
-        // Carregar usuários
-        async function carregarUsuarios() {
-            try {
-                const usuarios = await listarTodos('usuarios');
-                body.innerHTML = usuarios.map(usuario => `
+      async function carregarUsuarios() {
+        try {
+          const usuarios = await listarTodos("usuarios");
+          body.innerHTML = usuarios
+            .map(
+              (usuario) => `
                     <tr>
                         <td>${usuario.id}</td>
                         <td>${usuario.usuario}</td>
-                        <td>${'*'.repeat(usuario.senha.length)}</td>
+                        <td>${"*".repeat(usuario.senha.length)}</td>
                         <td>
-                            <button class="btn btn-warning btn-sm" data-action="editar" data-id="${usuario.id}">Editar</button>
-                            <button class="btn btn-danger btn-sm" data-action="excluir" data-id="${usuario.id}">Deletar</button>
+                            <button class="btn btn-warning btn-sm" data-action="editar" data-id="${
+                              usuario.id
+                            }">Editar</button>
+                            <button class="btn btn-danger btn-sm" data-action="excluir" data-id="${
+                              usuario.id
+                            }">Deletar</button>
                         </td>
                     </tr>
-                `).join('');
-            } catch (error) {
-                console.error('Erro ao carregar usuários:', error);
-                alert('Erro ao carregar a lista de usuários.');
-            }
+                `
+            )
+            .join("");
+        } catch (error) {
+          console.error("Erro ao carregar usuários:", error);
+          alert("Erro ao carregar a lista de usuários.");
         }
+      }
 
-        // Manipular cliques na tabela
-        body.addEventListener('click', async (e) => {
-            const id = e.target.getAttribute('data-id');
-            const action = e.target.getAttribute('data-action');
-            if (action === 'editar') editarUsuario(id);
-            if (action === 'excluir') excluirUsuario(id);
-        });
+      body.addEventListener("click", async (e) => {
+        const id = e.target.getAttribute("data-id");
+        const action = e.target.getAttribute("data-action");
+        if (action === "editar") editarUsuario(id);
+        if (action === "excluir") excluirUsuario(id);
+      });
 
-        // Editar usuário
-        async function editarUsuario(id) {
-            try {
-                const usuario = await listarTodos(`usuarios/${id}`);
-                form.usuario.value = usuario.usuario;
-                form.senha.value = usuario.senha;
-                form.setAttribute('data-id', id);
-            } catch (error) {
-                console.error('Erro ao buscar usuário:', error);
-                alert('Erro ao buscar informações do usuário.');
-            }
+      async function editarUsuario(id) {
+        try {
+          const usuario = await buscarPorId("usuarios", id);
+          form.usuario.value = usuario.usuario;
+          form.senha.value = usuario.senha;
+          form.setAttribute("data-id", id);
+        } catch (error) {
+          console.error("Erro ao buscar usuário:", error.message);
+          alert("Erro ao buscar informações do usuário.");
         }
+      }
 
-        // Excluir usuário
-        async function excluirUsuario(id) {
-            if (!confirm('Deseja realmente excluir este usuário?')) return;
+      async function excluirUsuario(id) {
+        if (!confirm("Deseja realmente excluir este usuário?")) return;
 
-            try {
-                await remover('usuarios', id);
-                alert('Usuário excluído com sucesso.');
-                carregarUsuarios();
-            } catch (error) {
-                console.error('Erro ao excluir usuário:', error);
-                alert('Erro ao excluir usuário.');
-            }
+        try {
+          await remover("usuarios", id);
+          alert("Usuário excluído com sucesso.");
+          carregarUsuarios();
+        } catch (error) {
+          console.error("Erro ao excluir usuário:", error);
+          alert("Erro ao excluir usuário.");
         }
+      }
 
-        // Salvar ou atualizar usuário
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const usuario = form.usuario.value;
-            const senha = form.senha.value;
-            const id = form.getAttribute('data-id');
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const usuario = form.usuario.value;
+        const senha = form.senha.value;
+        const id = form.getAttribute("data-id"); 
 
-            try {
-                if (id) {
-                    await atualizar('usuarios', id, { usuario, senha });
-                    alert('Usuário atualizado com sucesso.');
-                } else {
-                    await enviar('usuarios', { usuario, senha });
-                    alert('Usuário cadastrado com sucesso.');
-                }
-                form.reset();
-                form.removeAttribute('data-id');
-                carregarUsuarios();
-            } catch (error) {
-                console.error('Erro ao salvar usuário:', error);
-                alert('Erro ao salvar usuário.');
-            }
-        });
+        const formError = document.getElementById("formError");
+        formError.style.display = "none";
+        formError.innerHTML = "";
 
-        // Carregar lista ao iniciar
-        window.onload = carregarUsuarios;
+        try {
+          if (id) {            
+            await atualizar("usuarios", id, { usuario, senha });
+            alert("Usuário atualizado com sucesso.");
+          } else {            
+            await enviar("usuarios", { usuario, senha });
+            alert("Usuário cadastrado com sucesso.");
+          }
+          form.reset();
+          form.removeAttribute("data-id");
+          carregarUsuarios();
+        } catch (error) {
+          console.error("Erro ao salvar usuário:", error.message);
+          formError.innerHTML = error.message;
+          formError.style.display = "block";
+        }
+      });
+
+      window.onload = carregarUsuarios;
     </script>
-</body>
+  </body>
 </html>

@@ -1,63 +1,64 @@
 /* Configuração geral */
 body {
     background: #000;
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
+    color: #fff;
     margin: 0;
     padding: 0;
 }
+
+/* Logo */
 .logo img {
-    height: 150px;
-    justify-content: center;  
+    height: 100px;
 }
 
-/* Reduzindo margens laterais */
-.container {
-    max-width: 90%;
-    margin: auto;
+/* Botões */
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+    font-size: 16px;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
 }
 
 /* Cartões */
 .card {
     border: none;
     border-radius: 10px;
-    background-color: grey;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    -ms-border-radius: 10px;
-    -o-border-radius: 10px;
+    background-color: #333;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 }
 
-/* Tabelas */
-.flex-table {
-    table-layout: auto;
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.flex-table th,
-.flex-table td {
-    text-align: center; /* Alinhamento horizontal */
-    vertical-align: middle; /* Centralização vertical */
-    padding: 10px;
-    white-space: nowrap; /* Evita quebra de texto */
-    text-overflow: ellipsis; /* Aplica "..." para texto que excede o espaço */
-    overflow: hidden; /* Evita transbordamento */
-}
-
-.flex-table th {
-    background-color: #343a40;
-    color: #fff;
+.card-header {
     font-weight: bold;
 }
 
-/* Botões de ações */
-.flex-table .d-flex {
-    gap: 10px; /* Espaço entre botões */
-    justify-content: center; /* Centraliza botões dentro da célula */
+.card-body {
+    background-color: #222;
+    padding: 0; /* Remove o espaçamento interno */
+    overflow-x: auto; /* Adiciona barra de rolagem horizontal se necessário */
 }
 
-/* Adiciona scroll horizontal somente quando necessário */
-.card-body {
-    overflow-x: auto;
+/* Tabelas */
+.table-dark {
+    background-color: #333;
+  
+    table-layout: auto; /* Permite que as colunas se ajustem ao conteúdo */
 }
+
+.table-dark th, .table-dark td {
+    color: #fff;
+    white-space: nowrap; /* Evita quebras de texto */
+    overflow: hidden; /* Esconde excesso de texto */
+    text-overflow: ellipsis; /* Adiciona "..." para texto longo */
+}
+
+/* Remove margens laterais do container */
+.container {
+    padding-left: 0;
+    padding-right: 0;
+    max-width: 80%; /* Garante que o container ocupe toda a largura */
+}
+

@@ -8,58 +8,54 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="logo">
-        <img src="/Front/image/Distribuidora_Logo.png" alt="Logotipo">
-    </div>
-    <div class="container py-5">
-        <!-- Cabeçalho -->
+    <div class="container py-5">        
         <div class="text-center mb-5">
-            <h1 class="display-4 text-primary">Gerenciar Produtos</h1>
-            <p class="lead">Gerencie as informações dos produtos da Distribuidora de Bebidas.</p>
+            <div class="logo mb-3">
+                <img src="/Front/image/Distribuidora_Logo.png" alt="Logotipo">
+            </div>
+            <h1 class="text-light">Gerenciar Produtos</h1>
             <button class="btn btn-secondary" onclick="window.location.href='menu.html'">Voltar ao Menu</button>
         </div>
-
-        <!-- Layout lado a lado -->
-        <div class="row">
-            <!-- Formulário de produtos -->
-            <div class="col-lg-5 mb-4">
+        
+        <div class="row">            
+            <div class="col-lg-4 mb-4">
                 <div class="card shadow">
                     <div class="card-header bg-success text-white">
                         <h3 class="mb-0">Adicionar / Atualizar Produto</h3>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body bg-dark text-light">
                         <form id="produtosForm">
                             <div class="form-group">
-                                <label for="nome">Nome</label>
-                                <input type="text" class="form-control" id="nome" placeholder="Digite o nome do produto" required>
+                                <label for="nome" class="text-light">Nome</label>
+                                <input type="text" class="form-control bg-secondary text-light border-0" id="nome" placeholder="Digite o nome do produto" required>
                             </div>
                             <div class="form-group">
-                                <label for="preco">Preço</label>
-                                <input type="number" step="0.01" class="form-control" id="preco" placeholder="Digite o preço" required>
+                                <label for="preco" class="text-light">Preço</label>
+                                <input type="number" step="0.01" class="form-control bg-secondary text-light border-0" id="preco" placeholder="Digite o preço" required>
                             </div>
                             <div class="form-group">
-                                <label for="quantidade">Quantidade</label>
-                                <input type="number" class="form-control" id="quantidade" placeholder="Digite a quantidade" required>
+                                <label for="quantidade" class="text-light">Quantidade</label>
+                                <input type="number" class="form-control bg-secondary text-light border-0" id="quantidade" placeholder="Digite a quantidade" required>
                             </div>
                             <div class="form-group">
-                                <label for="categoria">Categoria</label>
-                                <input type="text" class="form-control" id="categoria" placeholder="Digite a categoria" required>
+                                <label for="categoria" class="text-light">Categoria</label>
+                                <input type="text" class="form-control bg-secondary text-light border-0" id="categoria" placeholder="Digite a categoria" required>
                             </div>
                             <button type="submit" class="btn btn-success btn-block">Salvar</button>
+                            <div id="formError" class="text-danger mt-3" style="display: none;"></div>
                         </form>
                     </div>
                 </div>
             </div>
 
-            <!-- Tabela de produtos -->
-            <div class="col-lg-7">
+            <div class="col-lg-8">
                 <div class="card shadow">
                     <div class="card-header bg-primary text-white">
                         <h3 class="mb-0">Lista de Produtos</h3>
                     </div>
-                    <div class="card-body">
-                        <table class="table table-hover flex-table">
-                            <thead class="thead-dark">
+                    <div class="card-body bg-dark text-light">
+                        <table class="table table-hover table-dark">
+                            <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Nome</th>
@@ -69,9 +65,7 @@
                                     <th>Ações</th>
                                 </tr>
                             </thead>
-                            <tbody id="produtosBody">
-                                <!-- Registros serão carregados aqui -->
-                            </tbody>
+                            <tbody id="produtosBody"></tbody>
                         </table>
                     </div>
                 </div>
@@ -80,12 +74,11 @@
     </div>
 
     <script type="module">
-        import { listarTodos, enviar, atualizar, remover } from './api.js';
+        import { listarTodos, enviar, atualizar, remover, buscarPorId } from './api.js';
 
         const form = document.getElementById('produtosForm');
         const body = document.getElementById('produtosBody');
-
-        // Função para carregar produtos
+     
         async function carregarProdutos() {
             try {
                 const produtos = await listarTodos('produtos');
@@ -116,22 +109,20 @@
             if (action === 'excluir') excluirProduto(id);
         });
 
-        // Editar produto
         async function editarProduto(id) {
             try {
-                const produto = await listarTodos(`produtos/${id}`);
+                const produto = await buscarPorId('produtos', id);
                 form.nome.value = produto.nome;
                 form.preco.value = produto.preco;
                 form.quantidade.value = produto.quantidade;
                 form.categoria.value = produto.categoria;
                 form.setAttribute('data-id', id);
             } catch (error) {
-                console.error('Erro ao buscar produto:', error);
+                console.error('Erro ao buscar produto:', error.message);
                 alert('Erro ao buscar informações do produto.');
             }
         }
 
-        // Excluir produto
         async function excluirProduto(id) {
             if (!confirm('Deseja realmente excluir este produto?')) return;
 
@@ -140,7 +131,7 @@
                 alert('Produto excluído com sucesso.');
                 carregarProdutos();
             } catch (error) {
-                console.error('Erro ao excluir produto:', error);
+                console.error('Erro ao excluir produto:', error.message);
                 alert('Erro ao excluir produto.');
             }
         }
@@ -154,6 +145,10 @@
             const categoria = form.categoria.value;
             const id = form.getAttribute('data-id');
 
+            const formError = document.getElementById('formError');
+            formError.style.display = 'none';
+            formError.innerHTML = '';
+
             try {
                 if (id) {
                     await atualizar('produtos', id, { nome, preco, quantidade, categoria });
@@ -166,12 +161,12 @@
                 form.removeAttribute('data-id');
                 carregarProdutos();
             } catch (error) {
-                console.error('Erro ao salvar produto:', error);
-                alert('Erro ao salvar produto.');
+                console.error('Erro ao salvar produto:', error.message);
+                formError.innerHTML = error.message;
+                formError.style.display = 'block';
             }
         });
 
-        // Carregar lista ao iniciar
         window.onload = carregarProdutos;
     </script>
 </body>
